@@ -42,7 +42,7 @@ object RewriteFunctions {
       _ <- {
       if (num == int.toString) printLine("You guessed right!")
       else printLine(s"You guessed wrong, the number was $int!")
-    }
+      }
     } yield ()
   }
 
