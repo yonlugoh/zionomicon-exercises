@@ -1,8 +1,8 @@
 package exercises
 
-import zio.{ExitCode, URIO, ZIO}
-import java.io._
 import zio.console.Console
+import zio.{ExitCode, URIO, ZIO}
+
 import scala.io.Source._
 object ReadFile {
 
