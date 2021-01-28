@@ -1,4 +1,4 @@
-package retry
+package exercises
 
 import zio.console.Console
 import zio.{RIO, URIO, ZIO, console}
