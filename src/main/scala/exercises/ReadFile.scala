@@ -1,9 +1,10 @@
 package exercises
 
 import zio.console.Console
-import zio.{ExitCode, URIO, ZIO}
+import zio.{ExitCode, Task, ZIO}
 
 import scala.io.Source._
+
 object ReadFile {
 
   def readFile(file: String): String = {
@@ -11,6 +12,6 @@ object ReadFile {
     try source.getLines.mkString finally source.close()
   }
 
-  def readFileZio(file: String): URIO[Any with Console, ExitCode] =
-    ZIO.effect(readFile(file)).exitCode
+  def readFileZio(file: String): Task[String] =
+    ZIO.effect(readFile(file))
 }
