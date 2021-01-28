@@ -5,7 +5,7 @@ import java.io.IOException
 import zio.ZIO
 import zio.console._
 
-object MyApp {
+object HelloWorld {
 
   def run(args: List[String]) =
     myAppLogic.exitCode
