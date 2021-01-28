@@ -1,5 +1,8 @@
 package app
 
+import java.io.IOException
+
+import zio.ZIO
 import zio.console._
 
 object MyApp {
@@ -7,7 +10,7 @@ object MyApp {
   def run(args: List[String]) =
     myAppLogic.exitCode
 
-  val myAppLogic =
+  val myAppLogic: ZIO[Console, IOException, Unit] =
     for {
       _    <- putStrLn("Hello! What is your name?")
       name <- getStrLn
