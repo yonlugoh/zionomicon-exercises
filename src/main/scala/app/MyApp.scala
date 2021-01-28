@@ -1,3 +1,5 @@
+package app
+
 import zio.console._
 
 object MyApp extends zio.App {

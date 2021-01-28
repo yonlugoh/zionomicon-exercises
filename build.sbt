@@ -1,3 +1,7 @@
+name := "zio-experiments"
+
+version := "1.0"
+
 val zioV = "1.0.4"
 
 libraryDependencies ++=
