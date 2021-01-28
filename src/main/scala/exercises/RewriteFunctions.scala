@@ -32,6 +32,8 @@ object RewriteFunctions {
     )
   }
 
+  // Rewrite the following ZIO code above that uses flatMap into a for comprehension
+
   def randomGuessForComprehension(): Unit = {
     for {
       int <- random
