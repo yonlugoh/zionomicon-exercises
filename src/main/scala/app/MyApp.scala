@@ -2,7 +2,7 @@ package app
 
 import zio.console._
 
-object MyApp extends zio.App {
+object MyApp {
 
   def run(args: List[String]) =
     myAppLogic.exitCode
