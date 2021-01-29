@@ -1,4 +1,4 @@
-package exercises
+package utils
 
 object Utils {
   final case class ZIO[-R, +E, +A](run: R => Either[E, A])

@@ -1,4 +1,4 @@
-package write
+package utils
 
 import zio.{Task, ZIO}
 import zio.console._
@@ -21,6 +21,7 @@ object WriteFile extends zio.App {
   def writeFile(file: String, text: String): Unit = {
     import java.io._
     val fileObj: File = new File(file)
+    fileObj.getParentFile.mkdirs()
     fileObj.createNewFile()
     val pw = new PrintWriter(fileObj)
     try pw.write(text) finally pw.close
