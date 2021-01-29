@@ -1,47 +1,54 @@
 package exercises
 
-import zio.ZIO
+import zio.console._
+import zio.{ExitCode, URIO, ZIO}
 
-object RewriteFunctions {
-  def printLine(line: String) = ZIO.effect(println(line))
-  val readLine = ZIO.effect(scala.io.StdIn.readLine())
+object RewriteFunctions extends zio.App {
+  def run(args: List[String]): URIO[zio.ZEnv, ExitCode] =
+    for {
+      _ <- getStrLnForComprehension().exitCode
+      exit <- randomGuessForComprehension().exitCode
+    } yield exit
 
-  def readLineFlatMap(): Unit = {
-    printLine("What is your name?").flatMap(_ =>
-      readLine.flatMap(name =>
-        printLine(s"Hello, ${name}!")))
+  def putStrLn(line: String) = ZIO.effect(println(line))
+
+  def getStrLnFlatMap():  ZIO[Console, Throwable, Unit]= {
+    putStrLn("What is your name?").flatMap(_ =>
+      getStrLn.flatMap(name =>
+        putStrLn(s"Hello, ${name}!")))
   }
 
   // Rewrite the following ZIO code above that uses flatMap into a for comprehension
 
-  def readLineForComprehension(): Unit = {
+  def getStrLnForComprehension(): ZIO[Console, Throwable, Unit] = {
     for {
-      name <- ZIO.effect(scala.io.StdIn.readLine())
-      _ <- printLine(s"Hello, $name!")
+      _ <- putStrLn("What is your name?")
+      name <- getStrLn
+      _ <- putStrLn(s"Hello, $name!")
     } yield ()
   }
 
   val random = ZIO.effect(scala.util.Random.nextInt(3) + 1)
 
-  def randomGuessFlatMap(): Unit = {
+  def randomGuessFlatMap(): ZIO[Console, Throwable, Unit] = {
     random.flatMap(int =>
-      printLine("Guess a number from 1 to 3:").flatMap(_ =>
-        readLine.flatMap(num =>
-          if (num == int.toString) printLine("You guessed right!")
-          else printLine(s"You guessed wrong, the number was $int!")))
+      putStrLn("Guess a number from 1 to 3:").flatMap(_ =>
+        getStrLn.flatMap(num =>
+          if (num == int.toString) putStrLn("You guessed right!")
+          else putStrLn(s"You guessed wrong, the number was $int!")))
     )
   }
 
   // Rewrite the following ZIO code above that uses flatMap into a for comprehension
 
-  def randomGuessForComprehension(): Unit = {
+  def randomGuessForComprehension(): ZIO[Console, Throwable, Unit] = {
     for {
       int <- random
-      _ <- printLine("Guess a number from 1 to 3:")
-      num <- readLine
+      _ <- putStrLn("Guess a number from 1 to 3:")
+      num <- getStrLn
       _ <- {
-      if (num == int.toString) printLine("You guessed right!")
-      else printLine(s"You guessed wrong, the number was $int!")
+        if (num == int.toString) putStrLn(s"You guessed $int right!")
+        else putStrLn(s"You guessed wrong, the number was $int!")
       }
     } yield ()
   }
