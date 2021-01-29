@@ -30,5 +30,22 @@ object Utils {
       go(in.toList, Nil)
     }
 
+  def foreach[R, E, A, B](
+                           in: Iterable[A]
+                         )(f: A => ZIO[R, E, B]): ZIO[R, E, List[B]] =
+    collectAll(in.map(f))
+
+  def orElse[R, E1, E2, A](
+                            self: ZIO[R, E1, A],
+                            that: ZIO[R, E2, A]
+                          ): ZIO[R, E2, A] =
+    ZIO {
+      r =>
+        for {
+          _ <- self.run(r).left
+          right <- that.run(r)
+        } yield right
+    }
+
 
 }
