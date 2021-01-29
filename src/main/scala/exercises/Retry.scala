@@ -1,20 +1,23 @@
 package exercises
 
 import zio.console.Console
-import zio.{RIO, URIO, ZIO, console}
+import zio.{ExitCode, RIO, URIO, ZIO, console}
 
-object Retry {
-    val readInt: RIO[Console, Int] =
+object Retry extends zio.App {
+  override def run(args: List[String]): URIO[zio.ZEnv, ExitCode] = {
+    readIntOrRetry.exitCode
+  }
+
+  val readInt: RIO[Console, Int] =
       for {
         line <- console.getStrLn
         int <- ZIO.effect(line.toInt)
       } yield int
 
-    lazy val readIntOrRetry: URIO[Console, Int] =
-      readInt
-        .orElse(console.putStrLn("\nPlease enter a valid integer"))
-        .zipRight(readIntOrRetry)
+  // Recursive
+  lazy val readIntOrRetry: URIO[Console, Int] =
+    readInt
+      .orElse(console.putStrLn("\nPlease enter a valid integer"))
+      .zipRight(readIntOrRetry)
 
-    def run(args: List[String]) =
-      readIntOrRetry.exitCode
 }
