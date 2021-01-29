@@ -15,4 +15,20 @@ object Utils {
       b <- fb
       } yield f(a, b)
     }
+
+  def collectAll[R, E, A](
+                           in: Iterable[ZIO[R, E, A]]
+                         ): ZIO[R, E, List[A]] =
+    ZIO {
+      r =>
+      def go(effects: List[ZIO[R, E, A]], acc: List[A]): Either[E, List[A]] =
+        effects match {
+          case Nil  => Right(acc)
+          case x::xs => x.run(r).flatMap(h => go(xs, h :: acc))
+        }
+
+      go(in.toList, Nil)
+    }
+
+
 }
