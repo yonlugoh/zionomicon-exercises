@@ -17,4 +17,9 @@ object ZIOUtils {
       case Nil    => ZIO.fail(None)
       case x :: _ => ZIO.succeed(x)
     }
+
+  def currentTime(): Long = System.currentTimeMillis()
+
+  lazy val currentTimeZIO: ZIO[Any, Nothing, Long] =
+    ZIO.effectTotal(currentTime())
 }
