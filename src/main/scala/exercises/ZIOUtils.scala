@@ -1,6 +1,7 @@
 package exercises
 
 import zio._
+import scala.concurrent.{ ExecutionContext, Future }
 
 /**
   * Implementing utils using ZIO library itself
@@ -48,5 +49,14 @@ object ZIOUtils {
       cb =>
         saveUserRecord(user, () => cb(ZIO.succeed()), ex => cb(ZIO.fail(ex)) )
     }
+
+  trait Query
+  trait Result
+  def doQuery(query: Query)(
+    implicit ec: ExecutionContext): Future[Result] =
+    ???
+
+  def doQueryZio(query: Query): ZIO[Any, Throwable, Result] =
+    ZIO.fromFuture(implicit ec => doQuery(query))
 
 }
