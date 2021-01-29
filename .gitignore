@@ -8,6 +8,7 @@ target
 /.bsp
 /RUNNING_PID
 /tmp
+*.cpy
 
 project/target
 project/project
