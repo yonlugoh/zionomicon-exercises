@@ -35,4 +35,18 @@ object ZIOUtils {
         getCacheValue(key, r => cb(ZIO.succeed(r)), ex => cb(ZIO.fail(ex)))
     }
 
+  trait User
+  def saveUserRecord(
+                      user: User,
+                      onSuccess: () => Unit,
+                      onFailure: Throwable => Unit
+                    ): Unit =
+    ???
+
+  def saveUserRecordZio(user: User): ZIO[Any, Throwable, Unit] =
+    ZIO.effectAsync[Any, Throwable, Unit] {
+      cb =>
+        saveUserRecord(user, () => cb(ZIO.succeed()), ex => cb(ZIO.fail(ex)) )
+    }
+
 }
