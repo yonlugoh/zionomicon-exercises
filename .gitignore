@@ -7,6 +7,7 @@ target
 /.settings
 /.bsp
 /RUNNING_PID
+/tmp
 
 project/target
 project/project
