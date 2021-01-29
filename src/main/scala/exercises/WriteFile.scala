@@ -37,7 +37,7 @@ object WriteFile extends zio.App {
     }
   yield ()
 
-  def copyAndWrite =
+  def copyAndWrite: ZIO[Console, Throwable, Unit] =
     for {
       _ <- copyFileZio("build.sbt", "/tmp/build.sbt.cpy")
       copied <- readFileZio("/tmp/build.sbt.cpy")

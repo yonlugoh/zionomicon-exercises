@@ -1,6 +1,10 @@
 package utils
 
+/**
+  * Trying to implement simple ZIO functions using toy model of ZIO
+  */
 object Utils {
+  // Toy model
   final case class ZIO[-R, +E, +A](run: R => Either[E, A])
   def zipWith[R, E, A, B, C](
                               self: ZIO[R, E, A],
