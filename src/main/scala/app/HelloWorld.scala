@@ -2,12 +2,11 @@ package app
 
 import java.io.IOException
 
-import zio.ZIO
+import zio.{ExitCode, URIO, ZIO}
 import zio.console._
 
-object HelloWorld {
-
-  def run(args: List[String]) =
+object HelloWorld extends zio.App {
+  def run(args: List[String]): URIO[Console, ExitCode] =
     myAppLogic.exitCode
 
   val myAppLogic: ZIO[Console, IOException, Unit] =
