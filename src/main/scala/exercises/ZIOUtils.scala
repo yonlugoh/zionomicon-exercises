@@ -22,4 +22,17 @@ object ZIOUtils {
 
   lazy val currentTimeZIO: ZIO[Any, Nothing, Long] =
     ZIO.effectTotal(currentTime())
+
+  def getCacheValue(
+                     key: String,
+                     onSuccess: String => Unit,
+                     onFailure: Throwable => Unit
+                   ): Unit = ???
+
+  def getCacheValueZio(key: String): ZIO[Any, Throwable, String] =
+    ZIO.effectAsync[Any, Throwable, String] {
+      cb =>
+        getCacheValue(key, r => cb(ZIO.succeed(r)), ex => cb(ZIO.fail(ex)))
+    }
+
 }
