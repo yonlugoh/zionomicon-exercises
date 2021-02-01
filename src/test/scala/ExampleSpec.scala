@@ -33,6 +33,14 @@ object ExampleSpec extends DefaultRunnableSpec {
     },
     test("hasSameElement") {
       assert(List(1, 1, 2, 3))(hasSameElements(List(3, 2, 1, 1)))
+    },
+    testM("fails") {
+      for {
+        exit <- ZIO.effect(1 / 0).catchAll(_ => ZIO.fail(())).run
+      } yield assert(exit)(fails(isUnit))
+    },
+    testM("fails with assertM") {
+      assertM(ZIO.effect(1 / 0).catchAll(_ => ZIO.fail(())).run)(fails(isUnit))
     }
   )
 }
