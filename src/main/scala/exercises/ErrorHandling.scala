@@ -50,4 +50,10 @@ object ErrorHandling extends zio.App {
   // eg of using lookupProfile2
   def lookupProfile3(userId: String): ZIO[Any, Option[DatabaseError], UserProfile] =
     lookupProfile(userId).some
+
+  def failWithMessage(string: String): ZIO[Any, Nothing, Error] =
+    ZIO.succeed(throw new Error(string))
+
+  def failWithMessageFixed(string: String): ZIO[Any, Error, Nothing] =
+    ZIO.fail(throw new Error(string))
 }
