@@ -25,8 +25,18 @@ object ConsoleApp extends zio.App {
                ): ZIO[Console, IOException, String] =
     for {
     input <- getStrLn
-    res <- if (acceptInput(input)) ZIO.succeed(input)
-    else readUntil(acceptInput)
+    res <-
+      if (acceptInput(input)) ZIO.succeed(input)
+      else readUntil(acceptInput)
     } yield res
 
+  def doWhile[R, E, A](
+                        body: ZIO[R, E, A]
+                      )(condition: A => Boolean): ZIO[R, E, A] =
+    for {
+      flag <- body
+      z <-
+        if (condition(flag)) ZIO.succeed(flag)
+        else doWhile(body)(condition)
+    } yield z
 }
