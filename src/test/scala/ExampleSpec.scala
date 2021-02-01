@@ -1,8 +1,11 @@
-import zio.test._
-import zio.test.Assertion._
-import zio.test.environment._
-import zio._
 import app.HelloWorld.greet
+import exercises.ZIOUtils.goShopping
+import zio._
+import zio.duration._
+import zio.test.Assertion._
+import zio.test._
+import zio.test.environment._
+import zio.test.TestAspect._
 
 object ExampleSpec extends DefaultRunnableSpec {
   def spec = suite("ExampleSpec")(
@@ -50,6 +53,13 @@ object ExampleSpec extends DefaultRunnableSpec {
         _ <- greet
         value <- TestConsole.output
       } yield assert(value)(equalTo(Vector("Hello, Jane!\n")))
+    },
+    testM("goShopping delays for one hour") {
+      for {
+        fiber <- goShopping.fork
+        _ <- TestClock.adjust(1.hour)
+        _ <- fiber.join
+      } yield assertCompletes
     }
   )
 }

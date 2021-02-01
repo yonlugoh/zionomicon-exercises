@@ -1,7 +1,11 @@
 package exercises
 
 import zio._
-import scala.concurrent.{ ExecutionContext, Future }
+import zio.clock._
+import zio.console.{Console, _}
+import zio.duration._
+
+import scala.concurrent.{ExecutionContext, Future}
 
 /**
   * Implementing utils using ZIO library itself
@@ -59,4 +63,6 @@ object ZIOUtils {
   def doQueryZio(query: Query): ZIO[Any, Throwable, Result] =
     ZIO.fromFuture(implicit ec => doQuery(query))
 
+  val goShopping: ZIO[Console with Clock, Nothing, Unit] =
+    putStrLn("Going shopping!").delay(1.hour)
 }
