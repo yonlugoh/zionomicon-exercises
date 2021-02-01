@@ -6,8 +6,12 @@ import zio.test.Assertion._
 import zio.test._
 import zio.test.environment._
 import zio.test.TestAspect._
+import zio.random._
 
 object ExampleSpec extends DefaultRunnableSpec {
+  val intGen: Gen[Random, Int] =
+    Gen.anyInt
+
   def spec = suite("ExampleSpec")(
     test("addition works") {
       assert(1 + 1)(equalTo(2))
@@ -60,6 +64,19 @@ object ExampleSpec extends DefaultRunnableSpec {
         _ <- TestClock.adjust(1.hour)
         _ <- fiber.join
       } yield assertCompletes
+    },
+    testM("this test will be repeated to ensure it is stable") {
+      assertM(ZIO.succeed(1 + 1))(equalTo(2))
+    } @@ nonFlaky(200),
+    testM("this test will fail") {
+      assertM(ZIO.succeed(1 + 1))(equalTo(0))
+    } @@ failing,
+    testM("integer addition is associative") {
+      check(intGen, intGen, intGen) { (x, y, z) =>
+        val left = (x + y) + z
+        val right = x + (y + z)
+        assert(left)(equalTo(right))
+      }
     }
   )
 }
