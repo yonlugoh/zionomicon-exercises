@@ -1,6 +1,8 @@
 import zio.test._
 import zio.test.Assertion._
+import zio.test.environment._
 import zio._
+import app.HelloWorld.greet
 
 object ExampleSpec extends DefaultRunnableSpec {
   def spec = suite("ExampleSpec")(
@@ -41,6 +43,13 @@ object ExampleSpec extends DefaultRunnableSpec {
     },
     testM("fails with assertM") {
       assertM(ZIO.effect(1 / 0).catchAll(_ => ZIO.fail(())).run)(fails(isUnit))
+    },
+    testM("greet says hello to the user") {
+      for {
+        _ <- TestConsole.feedLines("Jane")
+        _ <- greet
+        value <- TestConsole.output
+      } yield assert(value)(equalTo(Vector("Hello, Jane!\n")))
     }
   )
 }

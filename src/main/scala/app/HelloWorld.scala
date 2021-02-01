@@ -9,6 +9,12 @@ object HelloWorld extends zio.App {
   def run(args: List[String]): URIO[Console, ExitCode] =
     myAppLogic.exitCode
 
+  val greet: ZIO[Console, Nothing, Unit] =
+    for {
+      name <- getStrLn.orDie
+      _ <- putStrLn(s"Hello, $name!")
+    } yield ()
+
   val myAppLogic: ZIO[Console, IOException, Unit] =
     for {
       _    <- putStrLn("Hello! What is your name?")
