@@ -31,4 +31,23 @@ object ErrorHandling extends zio.App {
   // is that it can fail for some unknowable reason
   lazy val result: ZIO[Any, Any, (Unit, Unit)] = shareDocument("347823").zip(moveDocument("347823", "/temp/"))
 
+  trait DatabaseError
+  trait UserProfile
+
+  def lookupProfile(userId: String): ZIO[Any, DatabaseError, Option[UserProfile]] = ???
+
+  // Shift Option[UserProfile] to Option[DatabaseError]. If original effect failed with None, then the new effect will fail with None
+  // If original effect failed with some error e, then new effect will fail with Some(e)
+  def lookupProfile2(userId: String): ZIO[Any, Option[DatabaseError], UserProfile] =
+    lookupProfile(userId).foldM(
+      error => ZIO.fail(Some(error)),
+      success => success match {
+        case None => ZIO.fail(None)
+        case Some(profile) => ZIO.succeed(profile)
+      }
+    )
+
+  // eg of using lookupProfile2
+  def lookupProfile3(userId: String): ZIO[Any, Option[DatabaseError], UserProfile] =
+    lookupProfile(userId).some
 }
