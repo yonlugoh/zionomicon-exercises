@@ -88,4 +88,8 @@ object ErrorHandling extends zio.App {
       success => ZIO.succeed(success)
     )
 
+  def ioException[R, A](zio: ZIO[R, Throwable, A]): ZIO[R, java.io.IOException, A] =
+    zio.refineOrDieWith {
+      case x: java.io.IOException => x
+    } (identity)
 }
