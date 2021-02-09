@@ -47,13 +47,26 @@ object ErrorHandling extends zio.App {
       }
     )
 
-  // eg of using lookupProfile2
+  // implementing lookupProfile2 in more succinct manner.
   def lookupProfile3(userId: String): ZIO[Any, Option[DatabaseError], UserProfile] =
     lookupProfile(userId).some
 
   def failWithMessage(string: String): ZIO[Any, Nothing, Error] =
     ZIO.succeed(throw new Error(string))
 
+  // Fixed version
   def failWithMessageFixed(string: String): ZIO[Any, Error, Nothing] =
     ZIO.fail(throw new Error(string))
+
+  def recoverFromSomeDefects[R, E, A](zio: ZIO[R, E, A])(f: Throwable => Option[A]): ZIO[R, E, A] =
+    zio.foldCauseM(
+      cause =>
+        cause
+          .defects
+          .headOption
+          .flatMap(f(_))
+          .map(ZIO.succeed(_))
+          .getOrElse(zio),
+      _ => zio
+    )
 }
