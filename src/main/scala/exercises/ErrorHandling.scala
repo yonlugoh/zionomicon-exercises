@@ -1,6 +1,7 @@
 package exercises
 
 import zio._
+import zio.console._
 
 object ErrorHandling extends zio.App {
   def run(args: List[String]): URIO[zio.ZEnv, ExitCode] = {
@@ -67,6 +68,12 @@ object ErrorHandling extends zio.App {
           .flatMap(f(_))
           .map(ZIO.succeed(_))
           .getOrElse(zio),
+      _ => zio
+    )
+
+  def logFailures[R, E, A](zio: ZIO[R, E, A]): ZIO[R, E, A] =
+    zio.foldCauseM(
+      cause => ZIO.effectTotal(putStrLn(cause.prettyPrint)) *> zio,
       _ => zio
     )
 }
