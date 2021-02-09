@@ -92,4 +92,9 @@ object ErrorHandling extends zio.App {
     zio.refineOrDieWith {
       case x: java.io.IOException => x
     } (identity)
+
+  val parseNumber: ZIO[Any, Throwable, Int] = ZIO.effect("foo".toInt)
+
+  val parseNumberRefined: ZIO[Any, NumberFormatException, Int] =
+    parseNumber.refineToOrDie[NumberFormatException]
 }
