@@ -76,4 +76,16 @@ object ErrorHandling extends zio.App {
       cause => ZIO.effectTotal(putStrLn(cause.prettyPrint)) *> zio,
       _ => zio
     )
+
+  val effect = ZIO.effectTotal(1/0)
+  val recovered = recoverFromSomeDefects(effect) {
+    t => Some(t.getMessage.length)
+  }
+
+  def onAnyFailure[R, E, A](zio: ZIO[R, E, A], handler: ZIO[R, E, Any]): ZIO[R, E, A] =
+    zio.foldCauseM(
+      _ => handler *> zio,
+      success => ZIO.succeed(success)
+    )
+
 }
