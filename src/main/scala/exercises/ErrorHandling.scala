@@ -97,4 +97,22 @@ object ErrorHandling extends zio.App {
 
   val parseNumberRefined: ZIO[Any, NumberFormatException, Int] =
     parseNumber.refineToOrDie[NumberFormatException]
+
+  def left[R, E, A, B](zio: ZIO[R, E, Either[A, B]]): ZIO[R, Either[E, B], A] =
+    zio.foldM(
+      failure =>  ZIO.fail(Left(failure)),
+      {
+        case Right(b) => ZIO.fail(Right(b))
+        case Left(a) => ZIO.succeed(a)
+      }
+    )
+
+  def unleft[R, E, A, B](zio: ZIO[R, Either[E, B], A]): ZIO[R, E, Either[A, B]] =
+    zio.foldM(
+      {
+        case Right(b) => ZIO.succeed(Right(b))
+        case Left(e) => ZIO.fail(e)
+      },
+      success => ZIO.succeed(Left(success))
+    )
 }
