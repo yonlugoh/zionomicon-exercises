@@ -115,4 +115,22 @@ object ErrorHandling extends zio.App {
       },
       success => ZIO.succeed(Left(success))
     )
+
+  def right[R, E, A, B](zio: ZIO[R, E, Either[A, B]]): ZIO[R, Either[E, A], B] =
+    zio.foldM(
+      failure => ZIO.fail(Left(failure)),
+      {
+        case Left(a) => ZIO.fail(Right(a))
+        case Right(b) => ZIO.succeed(b)
+      }
+    )
+
+  def unright[R, E, A, B](zio: ZIO[R, Either[E, A], B]): ZIO[R, E, Either[A, B]] =
+    zio.foldM(
+      {
+        case Left(e) => ZIO.fail(e)
+        case Right(a) => ZIO.succeed(Left(a))
+      },
+      success => ZIO.succeed(Right(success))
+    )
 }
